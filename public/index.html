@@ -716,7 +716,7 @@
   function placeCard(place) {
     const image = place.image || "/images/miranoa-hero.png";
     return `
-      <a class="place-card" href="/places/${place.id}" aria-label="${place.name}の詳細を見る">
+      <a class="place-card" href="/places/${place.id}/?v=spot-${place.id}" aria-label="${place.name}の詳細を見る">
         <img class="place-photo" src="${image}" alt="${place.name}の写真" loading="lazy">
         <div class="place-body">
           <div>
