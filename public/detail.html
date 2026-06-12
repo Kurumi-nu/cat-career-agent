@@ -497,6 +497,7 @@
     <p class="note">この詳細情報は架空です。データは `miranoa.db` の `places` テーブルから取得しています。</p>
   </main>
 
+<script src="/site-data.js"></script>
 <script>
   const ids = {
     meta: document.querySelector("#meta"),
@@ -543,6 +544,16 @@
     `).join("");
   }
 
+  function fallbackDetail(id) {
+    const place = window.MIRANOA_PLACES.find((item) => item.id === id);
+    if (!place) return null;
+    const related = window.MIRANOA_PLACES
+      .filter((item) => item.id !== place.id && (item.category === place.category || item.area === place.area))
+      .sort((a, b) => b.rating - a.rating || a.name.localeCompare(b.name, "ja"))
+      .slice(0, 3);
+    return { place, related };
+  }
+
   function render(data) {
     const place = data.place;
     const image = place.image || "/images/miranoa-hero.png";
@@ -580,7 +591,16 @@
       showError("URLのスポットIDが正しくありません。");
       return;
     }
-    const data = await fetchJson(`/api/places/${id}`);
+    let data;
+    try {
+      data = await fetchJson(`/api/places/${id}`);
+    } catch (error) {
+      data = fallbackDetail(id);
+    }
+    if (!data) {
+      showError("指定されたスポットは見つかりませんでした。");
+      return;
+    }
     render(data);
   }
 

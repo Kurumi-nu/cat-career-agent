@@ -656,6 +656,7 @@
     </main>
   </div>
 
+<script src="/site-data.js"></script>
 <script>
   const state = {
     category: "all",
@@ -679,6 +680,37 @@
       throw new Error(`${response.status} ${response.statusText}`);
     }
     return response.json();
+  }
+
+  function fallbackCategories() {
+    const counts = new Map();
+    window.MIRANOA_PLACES.forEach((place) => {
+      counts.set(place.category, (counts.get(place.category) || 0) + 1);
+    });
+    return Array.from(counts, ([category, count]) => ({ category, count }))
+      .sort((a, b) => a.category.localeCompare(b.category, "ja"));
+  }
+
+  function fallbackStats() {
+    const total = window.MIRANOA_PLACES.length;
+    const average = window.MIRANOA_PLACES.reduce((sum, place) => sum + place.rating, 0) / total;
+    return {
+      totalPlaces: total,
+      averageRating: Math.round(average * 10) / 10,
+      categories: fallbackCategories()
+    };
+  }
+
+  function fallbackPlaces() {
+    const query = state.query.toLowerCase();
+    return window.MIRANOA_PLACES
+      .filter((place) => state.category === "all" || place.category === state.category)
+      .filter((place) => {
+        if (!query) return true;
+        return [place.name, place.area, place.tag, place.description]
+          .some((value) => value.toLowerCase().includes(query));
+      })
+      .sort((a, b) => b.rating - a.rating || a.name.localeCompare(b.name, "ja"));
   }
 
   function placeCard(place) {
@@ -731,7 +763,12 @@
     if (state.query) {
       params.set("q", state.query);
     }
-    const places = await fetchJson(`/api/places?${params.toString()}`);
+    let places;
+    try {
+      places = await fetchJson(`/api/places?${params.toString()}`);
+    } catch (error) {
+      places = fallbackPlaces();
+    }
     els.resultCount.textContent = `${places.length}件`;
     els.places.innerHTML = places.length
       ? places.map(placeCard).join("")
@@ -739,10 +776,17 @@
   }
 
   async function boot() {
-    const [stats, events] = await Promise.all([
-      fetchJson("/api/stats"),
-      fetchJson("/api/events")
-    ]);
+    let stats;
+    let events;
+    try {
+      [stats, events] = await Promise.all([
+        fetchJson("/api/stats"),
+        fetchJson("/api/events")
+      ]);
+    } catch (error) {
+      stats = fallbackStats();
+      events = window.MIRANOA_EVENTS;
+    }
     state.categories = stats.categories;
     els.totalPlaces.textContent = stats.totalPlaces;
     els.averageRating.textContent = stats.averageRating;
