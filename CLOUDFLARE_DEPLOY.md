@@ -15,8 +15,6 @@ wrangler login
 wrangler d1 create miranoa-db
 ```
 
-表示された `database_id` を `wrangler.toml` の `REPLACE_WITH_D1_DATABASE_ID` に貼り付けます。
-
 ## 3. SQLite互換DBへ初期データを投入
 
 ```bash
@@ -33,26 +31,16 @@ Cloudflare DashboardでPagesプロジェクトにD1 bindingを追加する場合
 
 ## GitHub経由で自動デプロイする場合
 
-このリポジトリには GitHub Actions の自動デプロイ設定があります。
+Cloudflare Pages の画面から GitHub リポジトリを接続します。
 
 ```text
-.github/workflows/cloudflare-pages.yml
+Repository: Kurumi-nu/cat-career-agent
+Production branch: main
+Build command: 空欄
+Build output directory: public
 ```
 
-GitHubのリポジトリ設定で、以下のActions Secretsを登録してください。
-
-```text
-CLOUDFLARE_API_TOKEN
-CLOUDFLARE_ACCOUNT_ID
-```
-
-`CLOUDFLARE_API_TOKEN` は Cloudflare Pages の編集とデプロイができる権限を持つAPI tokenを使います。
-
-Secrets登録後、`main` ブランチにpushすると自動で以下が実行されます。
-
-```bash
-wrangler pages deploy public --project-name=miranoa-archive
-```
+接続後、`main` ブランチにpushするとCloudflare Pagesが自動でデプロイします。
 
 D1は自動デプロイ前に一度だけ作成・初期投入してください。
 
