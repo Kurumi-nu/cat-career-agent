@@ -516,9 +516,14 @@
   };
 
   function placeIdFromPath() {
-    const queryId = Number(new URLSearchParams(location.search).get("id"));
+    const searchParams = new URLSearchParams(location.search);
+    const queryId = Number(searchParams.get("id"));
     if (Number.isInteger(queryId) && queryId > 0) {
       return queryId;
+    }
+    const versionMatch = (searchParams.get("v") || "").match(/^spot-(\d+)$/);
+    if (versionMatch) {
+      return Number(versionMatch[1]);
     }
     const id = Number(location.pathname.split("/").filter(Boolean).pop());
     if (location.pathname === "/detail" || location.pathname === "/detail.html") {
