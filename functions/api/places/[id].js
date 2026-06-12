@@ -1,3 +1,5 @@
+import { PLACES, relatedPlaces } from "../../_data.js";
+
 function json(data, status = 200) {
   return Response.json(data, {
     status,
@@ -12,6 +14,14 @@ export async function onRequestGet({ params, env }) {
 
   if (!Number.isInteger(placeId) || placeId <= 0) {
     return json({ error: "Invalid place id" }, 400);
+  }
+
+  if (!env.DB) {
+    const place = PLACES.find((item) => item.id === placeId);
+    if (!place) {
+      return json({ error: "Place not found" }, 404);
+    }
+    return json({ place, related: relatedPlaces(place) });
   }
 
   const place = await env.DB.prepare("SELECT * FROM places WHERE id = ?")

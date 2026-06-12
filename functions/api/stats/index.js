@@ -1,4 +1,19 @@
+import { PLACES, categories } from "../../_data.js";
+
 export async function onRequestGet({ env }) {
+  if (!env.DB) {
+    const average = PLACES.reduce((sum, place) => sum + place.rating, 0) / PLACES.length;
+    return Response.json({
+      totalPlaces: PLACES.length,
+      averageRating: Math.round(average * 10) / 10,
+      categories: categories()
+    }, {
+      headers: {
+        "Cache-Control": "public, max-age=60"
+      }
+    });
+  }
+
   const { results: categories } = await env.DB.prepare(`
     SELECT category, COUNT(*) AS count
     FROM places
