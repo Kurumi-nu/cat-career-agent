@@ -263,16 +263,16 @@
   .cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 12px;
+    gap: 14px;
+    padding: 14px;
   }
 
   .place-card {
-    min-height: 250px;
+    min-height: 0;
     border: 1px solid var(--line);
-    background: #fbfaf6;
+    background: #fffdf8;
     display: grid;
-    grid-template-rows: 180px 1fr;
+    grid-template-rows: auto 1fr;
     align-content: space-between;
     color: inherit;
     overflow: hidden;
@@ -286,19 +286,22 @@
   }
 
   .place-photo {
+    display: block;
     width: 100%;
-    height: 100%;
-    min-height: 180px;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
     background: #d9ddd8;
   }
 
   .place-body {
-    min-height: 250px;
+    min-height: 236px;
     padding: 20px;
     display: grid;
     align-content: space-between;
     gap: 22px;
+    background: #fffdf8;
   }
 
   .place-meta {
@@ -313,16 +316,16 @@
     align-items: center;
     min-height: 28px;
     padding: 0 9px;
-    color: var(--aqua);
-    background: rgba(35, 133, 141, 0.1);
+    color: #16747d;
+    background: #e6f3f2;
     border-radius: 999px;
     font-size: 0.78rem;
     font-weight: 500;
   }
 
   .chip.area {
-    color: var(--coral);
-    background: rgba(216, 91, 73, 0.1);
+    color: #bd4b3d;
+    background: #f7e8e4;
   }
 
   .place-card h3 {
@@ -334,15 +337,17 @@
 
   .place-card p {
     margin: 0;
-    color: var(--muted);
+    color: #43555f;
     font-size: 0.96rem;
+    line-height: 1.78;
   }
 
   .details {
     display: grid;
     gap: 8px;
-    color: var(--muted);
+    color: #53646d;
     font-size: 0.9rem;
+    line-height: 1.55;
   }
 
   .details strong {
@@ -444,11 +449,11 @@
     }
 
     .place-card {
-      grid-template-rows: 210px auto;
+      grid-template-rows: auto 1fr;
     }
 
     .place-body {
-      min-height: auto;
+      min-height: 0;
     }
 
     .panel-head {
@@ -537,16 +542,21 @@
     }
 
     .place-card {
-      grid-template-rows: minmax(220px, 48vw) auto;
+      display: block;
+      min-height: 0;
     }
 
     .place-photo {
-      min-height: 220px;
+      width: 100%;
+      min-height: 0;
+      aspect-ratio: 4 / 3;
     }
 
     .place-body {
-      padding: 18px;
+      padding: 18px 16px 20px;
       gap: 18px;
+      background: #fffdf8;
+      border-top: 1px solid var(--line);
     }
 
     .place-card h3 {
@@ -556,7 +566,7 @@
     .place-card p,
     .event p,
     .details {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
   }
 
@@ -590,7 +600,7 @@
     }
 
     .place-card {
-      grid-template-rows: 210px auto;
+      display: block;
     }
   }
 </style>
