@@ -516,7 +516,14 @@
   };
 
   function placeIdFromPath() {
+    const queryId = Number(new URLSearchParams(location.search).get("id"));
+    if (Number.isInteger(queryId) && queryId > 0) {
+      return queryId;
+    }
     const id = Number(location.pathname.split("/").filter(Boolean).pop());
+    if (location.pathname === "/detail" || location.pathname === "/detail.html") {
+      return 1;
+    }
     return Number.isInteger(id) && id > 0 ? id : null;
   }
 
@@ -588,7 +595,7 @@
   async function boot() {
     const id = placeIdFromPath();
     if (!id) {
-      showError("URLのスポットIDが正しくありません。");
+      location.href = "/";
       return;
     }
     let data;
